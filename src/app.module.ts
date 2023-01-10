@@ -12,6 +12,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DeveloperRolesModule } from './developer-roles/developer-roles.module';
 import { HardSkillsModule } from './hard-skills/hard-skills.module';
 import { ProjectsModule } from './projects/projects.module';
+import { ExperiencesModule } from './experiences/experiences.module';
+import { PositionsModule } from './positions/positions.module';
+import { AlbumsModule } from './albums/albums.module';
+import { PhotosModule } from './photos/photos.module';
+import { SeedModule } from './seed/seed.module';
 
 
 @Module({
@@ -36,6 +41,11 @@ import { ProjectsModule } from './projects/projects.module';
     DeveloperRolesModule,
     HardSkillsModule,
     ProjectsModule,
+    ExperiencesModule,
+    PositionsModule,
+    AlbumsModule,
+    PhotosModule,
+    SeedModule,
   ],
   controllers: [],
   providers: [],

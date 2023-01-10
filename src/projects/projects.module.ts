@@ -22,6 +22,10 @@ import { HardSkillsModule } from 'src/hard-skills/hard-skills.module';
     ]),
     DeveloperRolesModule,
     HardSkillsModule,
+  ],
+  exports: [
+    MongooseModule,
+    ProjectsModule
   ]
 })
 export class ProjectsModule { }
