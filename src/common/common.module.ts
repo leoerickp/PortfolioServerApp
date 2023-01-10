@@ -4,9 +4,6 @@ import { CommonController } from './common.controller';
 
 @Module({
   controllers: [CommonController],
-  providers: [CommonService],
-  exports: [
-    CommonModule
-  ]
+  providers: [CommonService]
 })
 export class CommonModule { }

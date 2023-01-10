@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DeveloperRolesModule } from './developer-roles/developer-roles.module';
 import { HardSkillsModule } from './hard-skills/hard-skills.module';
+import { ProjectsModule } from './projects/projects.module';
 
 
 @Module({
@@ -33,7 +34,8 @@ import { HardSkillsModule } from './hard-skills/hard-skills.module';
     CommonModule,
     SendEmailModule,
     DeveloperRolesModule,
-    HardSkillsModule
+    HardSkillsModule,
+    ProjectsModule,
   ],
   controllers: [],
   providers: [],

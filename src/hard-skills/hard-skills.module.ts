@@ -13,7 +13,7 @@ import { ConfigModule } from '@nestjs/config';
     MongooseModule.forFeature([{
       name: HardSkill.name,
       schema: HardSkillSchema
-    }]),
+    }])
   ],
   exports: [
     MongooseModule,

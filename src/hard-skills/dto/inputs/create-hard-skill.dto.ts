@@ -1,4 +1,3 @@
-import { Type } from "class-transformer";
 import { ArrayMinSize, IsArray, IsBoolean, IsEnum, IsInt, IsOptional, IsPositive, IsString, IsUrl, Max, MinLength } from "class-validator";
 import { LanguagesDto } from "src/common/dto/inputs/languages.dto";
 import { ValidSkillTypes } from "src/hard-skills/enums/valid-skilltypes.enum";
@@ -26,7 +25,6 @@ export class CreateHardSkillDto {
 
     @IsArray()
     @ArrayMinSize(1)
-    @Type(() => LanguagesDto)
     @IsOptional()
     knowledges?: LanguagesDto[];
 
