@@ -518,3 +518,19 @@ export const PHOTOS = [
         imgUrl: 'https://scontent.flpb2-1.fna.fbcdn.net/v/t1.18169-9/1461057_10202706339563719_195212153_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=cdbe9c&_nc_ohc=cz7z1QCMZpoAX8v6t4q&_nc_ht=scontent.flpb2-1.fna&oh=00_AfD97WfEzFSDyvJrcp_EW76NLFVqCgqjh4vrgxXQ6-VDWg&oe=63B83AD2'
     }
 ];
+
+export const PROFILE = {
+    name: "Leo Erick Pereyra Rodriguez",
+    birthDate: "1975-08-01T04:00:00.000Z",
+    englishLevel: "Upper Intermediate (B2)",
+    email: "leoerickp@gmail.com",
+    cellphone: "+59172873363",
+    githubRepository: "https://github.com/leoerickp",
+    linkedIn: "https://www.linkedin.com/in/leoerickp/",
+    city: "La Paz",
+    aboutMe: {
+        en: "I am a Fullstack Developer and Scrum Master with more than 10 years of experience developing BackEnd and FrontEnd solutions with frameworks such as ReactJs, NodeJS, Angular, VueJS and MSSQL, MySQL and PostgreSQL databases, leading projects through agile Scrum, Design Thinking and Kanban methodologies. My goal is to contribute to the development of IT solutions on a global scale, leading dynamic and high-performance teams, promoting research, technological development and corporate growth.",
+        es: null
+    },
+    facebook: "https://www.facebook.com/leoerickp"
+}

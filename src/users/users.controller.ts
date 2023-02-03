@@ -7,6 +7,7 @@ import { User } from './entities/user.entity';
 import { ParseMongoIdPipe } from '../common/pipes/parse-mongo-id/parse-mongo-id.pipe';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user/current-user.decorator';
+import { ValidRoles } from './enums/valid-roles.enums';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -45,7 +46,7 @@ export class UsersController {
   @Delete(':id')
   async blockUser(
     @Param('id', ParseMongoIdPipe) id: string,
-    @CurrentUser() user: User
+    @CurrentUser([ValidRoles.admin]) user: User
   ): Promise<User> {
     return await this.usersService.block(id, user);
   }

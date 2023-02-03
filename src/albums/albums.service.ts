@@ -6,6 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationArgs } from '../common/dto/args/pagination.args';
 import { ConfigService } from '@nestjs/config';
+import { DataResponse } from '../common/types/data-response';
 
 @Injectable()
 export class AlbumsService {
@@ -28,12 +29,13 @@ export class AlbumsService {
     }
   }
 
-  async findAll(pagination: PaginationArgs): Promise<Album[]> {
+  async findAll(pagination: PaginationArgs): Promise<DataResponse<Album>> {
     const { limit = this.defaultLimit, offset = 0 } = pagination;
     const albums = await this.albumModel.find()
       .limit(limit)
       .skip(offset);
-    return albums;
+    const count: number = await this.albumModel.find().count();
+    return { count, data: albums };
   }
 
   async findOne(id: string): Promise<Album> {

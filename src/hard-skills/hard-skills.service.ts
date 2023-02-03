@@ -7,6 +7,7 @@ import { PaginationArgs } from '../common/dto/args/pagination.args';
 import { User } from '../users/entities/user.entity';
 import { ValidSkillTypes } from './enums/valid-skilltypes.enum';
 import { ConfigService } from '@nestjs/config';
+import { DataResponse } from '../common/types/data-response';
 
 @Injectable()
 export class HardSkillsService {
@@ -31,23 +32,27 @@ export class HardSkillsService {
     }
   }
 
-  async findAll(skillTypes: ValidSkillTypes[], pagination: PaginationArgs): Promise<HardSkill[]> {
+  async findAll(skillTypes: ValidSkillTypes[], pagination: PaginationArgs): Promise<DataResponse<HardSkill>> {
     const { limit = this.defaultLimit, offset = 0 } = pagination;
     if (!skillTypes || skillTypes.length === 0) {
-      return await this.hardSkillsModel.find().populate('lastUpdateBy')
+      const hardSkills: HardSkill[] = await this.hardSkillsModel.find().populate({ path: 'lastUpdateBy', select: 'name email' })
         .limit(limit)
         .skip(offset);
+      const count: number = await this.hardSkillsModel.find().count();
+      return { count, data: hardSkills }
     }
     else {
-      return await this.hardSkillsModel.find({ skillType: skillTypes }).populate('lastUpdateBy')
+      const hardSkills: HardSkill[] = await this.hardSkillsModel.find({ skillType: skillTypes }).populate({ path: 'lastUpdateBy', select: 'name email' })
         .limit(limit)
         .skip(offset);
+      const count: number = await this.hardSkillsModel.find({ skillType: skillTypes }).count();
+      return { count, data: hardSkills }
     }
   }
 
   async findOne(id: string): Promise<HardSkill> {
 
-    const hardSkill = await this.hardSkillsModel.findById(id).populate('lastUpdateBy');
+    const hardSkill = await this.hardSkillsModel.findById(id).populate({ path: 'lastUpdateBy', select: 'name email' });
     if (!hardSkill) {
       throw new NotFoundException(`${id} not found`);
     }
@@ -62,7 +67,7 @@ export class HardSkillsService {
         ...updateHardSkillDto,
         updatedDate: new Date(),
         lastUpdateBy: user
-      }, { new: true }).populate('lastUpdateBy');
+      }, { new: true }).populate({ path: 'lastUpdateBy', select: 'name email' });
 
     if (!hardSkillUpdated) {
       throw new NotFoundException(`${id} not found`);

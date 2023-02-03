@@ -8,6 +8,7 @@ import { SearchArgs } from '../common/dto/args/search.args';
 import { ParseMongoIdPipe } from '../common/pipes/parse-mongo-id/parse-mongo-id.pipe';
 import { Position } from './entities/position.entity';
 import { User } from '../users/entities/user.entity';
+import { DataResponse } from '../common/types/data-response';
 
 @Controller('positions')
 @UseGuards(JwtAuthGuard)
@@ -16,7 +17,7 @@ export class PositionsController {
     private readonly positionsService: PositionsService,
   ) { }
 
-  //@Post()
+  @Post()
   async create(
     @Body() createPositionDto: CreatePositionDto,
     @CurrentUser() user: User
@@ -29,7 +30,7 @@ export class PositionsController {
     @Param('experienceId', ParseMongoIdPipe) experienceId: string,
     @Query() pagination: PaginationArgs,
     @Query() search: SearchArgs,
-  ): Promise<Position[]> {
+  ): Promise<DataResponse<Position>> {
     return await this.positionsService.findAll(experienceId, pagination, search);
   }
 

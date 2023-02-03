@@ -11,6 +11,7 @@ import { ProjectsModule } from '../projects/projects.module';
 import { AlbumsModule } from '../albums/albums.module';
 import { PhotosModule } from '../photos/photos.module';
 import { UsersService } from '../users/users.service';
+import { ProfileModule } from '../profile/profile.module';
 
 @Module({
   controllers: [SeedController],
@@ -24,7 +25,8 @@ import { UsersService } from '../users/users.service';
     PositionsModule,
     ProjectsModule,
     AlbumsModule,
-    PhotosModule
+    PhotosModule,
+    ProfileModule
   ]
 })
 export class SeedModule { }

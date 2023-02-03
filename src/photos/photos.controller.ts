@@ -7,13 +7,14 @@ import { User } from '../users/entities/user.entity';
 import { PaginationArgs } from '../common/dto/args/pagination.args';
 import { ParseMongoIdPipe } from '../common/pipes/parse-mongo-id/parse-mongo-id.pipe';
 import { Photo } from './entities/photo.entity';
+import { DataResponse } from '../common/types/data-response';
 
 @Controller('photos')
 @UseGuards(JwtAuthGuard)
 export class PhotosController {
   constructor(private readonly photosService: PhotosService) { }
 
-  //@Post()
+  @Post()
   async create(
     @Body() createPhotoDto: CreatePhotoDto,
     @CurrentUser() user: User
@@ -26,7 +27,7 @@ export class PhotosController {
   async findAll(
     @Param('albumId', ParseMongoIdPipe) albumId: string,
     @Query() pagination: PaginationArgs
-  ): Promise<Photo[]> {
+  ): Promise<DataResponse<Photo>> {
     return await this.photosService.findAll(albumId, pagination);
   }
 

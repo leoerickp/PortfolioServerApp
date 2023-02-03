@@ -10,6 +10,7 @@ import { HardSkillsService } from 'src/hard-skills/hard-skills.service';
 import { PaginationArgs } from '../common/dto/args/pagination.args';
 import { SearchArgs } from '../common/dto/args/search.args';
 import { ParseMongoIdPipe } from '../common/pipes/parse-mongo-id/parse-mongo-id.pipe';
+import { DataResponse } from '../common/types/data-response';
 
 @Controller('projects')
 @UseGuards(JwtAuthGuard)
@@ -39,7 +40,7 @@ export class ProjectsController {
   async findAll(
     @Query() pagination: PaginationArgs,
     @Query() search: SearchArgs,
-  ): Promise<Project[]> {
+  ): Promise<DataResponse<Project>> {
     return await this.projectsService.findAll(pagination, search);
   }
 

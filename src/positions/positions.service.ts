@@ -9,6 +9,7 @@ import { SearchArgs } from '../common/dto/args/search.args';
 import { searchTransform } from '../common/helpers/search-transform';
 import { Experience } from '../experiences/entities/experience.entity';
 import { ConfigService } from '@nestjs/config';
+import { DataResponse } from '../common/types/data-response';
 
 @Injectable()
 export class PositionsService {
@@ -46,7 +47,7 @@ export class PositionsService {
     }
   }
 
-  async findAll(experienceId: string, pagination: PaginationArgs, searchArgs: SearchArgs): Promise<Position[]> {
+  async findAll(experienceId: string, pagination: PaginationArgs, searchArgs: SearchArgs): Promise<DataResponse<Position>> {
     const { limit = this.defaultLimit, offset = 0 } = pagination;
     const { search } = searchArgs;
 
@@ -62,18 +63,21 @@ export class PositionsService {
         .skip(offset);
     }*/
 
-    return await this.positionsModel.find({ experienceId })
+
+    const positions: Position[] = await this.positionsModel.find({ experienceId })
       .limit(limit)
       .skip(offset)
-      .populate('lastUpdateBy')
+      .populate({ path: 'lastUpdateBy', select: 'name email' })
       .populate('hardSkillsId')
       .populate('experienceId');
+    const count: number = await this.positionsModel.find({ experienceId }).count();
+    return { count, data: positions }
   }
 
 
   async findOne(id: string): Promise<Position> {
     const position = await this.positionsModel.findById(id)
-      .populate('lastUpdateBy')
+      .populate({ path: 'lastUpdateBy', select: 'name email' })
       .populate('hardSkillsId')
       .populate('experienceId');
     if (!position) {
@@ -93,7 +97,7 @@ export class PositionsService {
         },
         { new: true }
       )
-        .populate('lastUpdateBy')
+        .populate({ path: 'lastUpdateBy', select: 'name email' })
         .populate('hardSkillsId')
         .populate('experienceId');
 
@@ -106,7 +110,13 @@ export class PositionsService {
   }
 
   async remove(id: string, user: User): Promise<Position> {
-    return await this.update(id, { id, isVisible: false }, user);
+    //return await this.update(id, { isVisible: false }, user);
+    try {
+      const position = await this.positionsModel.findByIdAndDelete(id);
+      return position;
+    } catch (error) {
+      this.handleExceptions(error);
+    }
   }
 
   private handleExceptions(error: any) {

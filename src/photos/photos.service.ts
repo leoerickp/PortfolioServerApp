@@ -7,6 +7,7 @@ import { User } from '../users/entities/user.entity';
 import { PaginationArgs } from '../common/dto/args/pagination.args';
 import { Album } from '../albums/entities/album.entity';
 import { ConfigService } from '@nestjs/config';
+import { DataResponse } from '../common/types/data-response';
 
 @Injectable()
 export class PhotosService {
@@ -41,19 +42,21 @@ export class PhotosService {
     }
   }
 
-  async findAll(albumId: string, pagination: PaginationArgs): Promise<Photo[]> {
+  async findAll(albumId: string, pagination: PaginationArgs): Promise<DataResponse<Photo>> {
     const { limit = this.defaultLimit, offset = 0 } = pagination
-    return await this.photosModel.find({ albumId })
+    const photos = await this.photosModel.find({ albumId })
       .limit(limit)
       .skip(offset)
       .populate('albumId')
-      .populate('lastUpdateBy');
+      .populate({ path: 'lastUpdateBy', select: 'name email' });
+    const count: number = await this.photosModel.find({ albumId }).count();
+    return { count, data: photos };
   }
 
   async findOne(id: string): Promise<Photo> {
     const photo = await this.photosModel.findById(id)
       .populate('albumId')
-      .populate('lastUpdateBy');
+      .populate({ path: 'lastUpdateBy', select: 'name email' });
     if (!photo) {
       throw new NotFoundException(`${id} not found`);
     }
@@ -72,7 +75,7 @@ export class PhotosService {
         { new: true }
       )
         .populate('albumId')
-        .populate('lastUpdateBy');
+        .populate({ path: 'lastUpdateBy', select: 'name email' });
       return photo;
     } catch (error) {
       this.handleExceptions(error);
@@ -80,7 +83,13 @@ export class PhotosService {
   }
 
   async remove(id: string, user: User): Promise<Photo> {
-    return this.update(id, { id, isVisible: false }, user);
+    //return this.update(id, { id, isVisible: false }, user);
+    try {
+      const position = await this.photosModel.findByIdAndDelete(id);
+      return position;
+    } catch (error) {
+      this.handleExceptions(error);
+    }
   }
 
   private handleExceptions(error: any) {

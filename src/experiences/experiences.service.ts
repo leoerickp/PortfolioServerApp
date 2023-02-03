@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { Experience } from './entities/experience.entity';
 import { CreateExperienceDto, UpdateExperienceDto } from './dto/inputs';
 import { User } from '../users/entities/user.entity';
+import { DataResponse } from '../common/types/data-response';
 
 
 @Injectable()
@@ -40,31 +41,39 @@ export class ExperiencesService {
     }
   }
 
-  async findAll(pagination: PaginationArgs, searchArgs: SearchArgs): Promise<Experience[]> {
+  async findAll(pagination: PaginationArgs, searchArgs: SearchArgs): Promise<DataResponse<Experience>> {
     const { limit = this.defaultLimit, offset = 0 } = pagination;
     const { search } = searchArgs;
 
     if (search) {
       const searchArr = searchTransform(search);
       // TODO: Mejorar las búsquedas por otros campos
-      return await this.experiencesModel.find({
+      const experiences: Experience[] = await this.experiencesModel.find({
         $or: searchArr.map(e => {
           return { company: { "$regex": e.trim(), "$options": "i" } }
         })
       })
         .limit(limit)
         .skip(offset)
-        .populate('lastUpdateBy');
+        .populate({ path: 'lastUpdateBy', select: 'name email' });
+      const count: number = await this.experiencesModel.find({
+        $or: searchArr.map(e => {
+          return { company: { "$regex": e.trim(), "$options": "i" } }
+        })
+      }).count();
+      return { count, data: experiences }
     }
 
-    return await this.experiencesModel.find()
+    const experiences: Experience[] = await this.experiencesModel.find()
       .limit(limit)
       .skip(offset)
-      .populate('lastUpdateBy');
+      .populate({ path: 'lastUpdateBy', select: 'name email' });
+    const count: number = await this.experiencesModel.find().count();
+    return { count, data: experiences }
   }
 
   async findOne(id: string): Promise<Experience> {
-    const experience = await this.experiencesModel.findById(id).populate('lastUpdateBy');
+    const experience = await this.experiencesModel.findById(id).populate({ path: 'lastUpdateBy', select: 'name email' });
     if (!experience) {
       throw new NotFoundException(`${id} not found`);
     }
@@ -109,7 +118,7 @@ export class ExperiencesService {
           lastUpdateBy: user,
         },
         { new: true }
-      ).populate('lastUpdateBy');
+      ).populate({ path: 'lastUpdateBy', select: 'name email' });
 
       return experience;
 

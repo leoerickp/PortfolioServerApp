@@ -37,19 +37,20 @@ export class UsersService {
     const { limit = this.defaultLimit, offset = 0 } = pagination;
     if (!validRoles.roles || validRoles.roles.length === 0) {
       return await this.usersModel.find()
-        .populate('lastUpdateBy')
+        .populate({ path: 'lastUpdateBy', select: 'name email' })
         .limit(limit)
         .skip(offset);
     } else {
       return await this.usersModel.find({ roles: validRoles.roles })
-        .populate('lastUpdateBy')
+        .populate({ path: 'lastUpdateBy', select: 'name email' })
         .limit(limit)
         .skip(offset);
     }
   }
 
   async findOne(id: string): Promise<User> {
-    const user = await (await this.usersModel.findById(id)).populate('lastUpdateBy');
+    const user = await (await this.usersModel.findById(id))
+      .populate({ path: 'lastUpdateBy', select: 'name email' });
     if (!user) {
       throw new NotFoundException(`${id} not found`);
     }
@@ -73,7 +74,7 @@ export class UsersService {
         createdBy: new Date()
       },
       { new: true })
-      .populate('lastUpdateBy');
+      .populate({ path: 'lastUpdateBy', select: 'name email' });
     if (!userUpdated) {
       throw new NotFoundException(`${id} not found`);
     }

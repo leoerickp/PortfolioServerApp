@@ -8,6 +8,7 @@ import { HardSkill } from './entities/hard-skill.entity';
 import { ValidSkillTypesArgs } from './dto/args/skilltypes.arg';
 import { PaginationArgs } from 'src/common/dto/args/pagination.args';
 import { ParseMongoIdPipe } from '../common/pipes/parse-mongo-id/parse-mongo-id.pipe';
+import { DataResponse } from '../common/types/data-response';
 
 @Controller('hard-skills')
 @UseGuards(JwtAuthGuard)
@@ -26,7 +27,7 @@ export class HardSkillsController {
   async findAll(
     @Body() Types: ValidSkillTypesArgs,
     @Query() pagination: PaginationArgs,
-  ): Promise<HardSkill[]> {
+  ): Promise<DataResponse<HardSkill>> {
     return await this.hardSkillsService.findAll(Types.skillTypes, pagination);
   }
 

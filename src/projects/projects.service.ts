@@ -8,6 +8,7 @@ import { PaginationArgs } from '../common/dto/args/pagination.args';
 import { SearchArgs } from '../common/dto/args/search.args';
 import { searchTransform } from '../common/helpers/search-transform';
 import { ConfigService } from '@nestjs/config';
+import { DataResponse } from '../common/types/data-response';
 
 @Injectable()
 export class ProjectsService {
@@ -40,37 +41,45 @@ export class ProjectsService {
     }
   }
 
-  async findAll(pagination: PaginationArgs, searchArgs: SearchArgs): Promise<Project[]> {
+  async findAll(pagination: PaginationArgs, searchArgs: SearchArgs): Promise<DataResponse<Project>> {
     const { limit = this.defaultLimit, offset = 0 } = pagination;
     const { search } = searchArgs;
 
     if (search) {
       const searchArr = searchTransform(search);
       // TODO: Mejorar las búsquedas por otros campos
-      return await this.projectsModel.find({
+      const projects: Project[] = await this.projectsModel.find({
         $or: searchArr.map(e => {
           return { projectName: { "$regex": e.trim(), "$options": "i" } }
         })
       })
-        .populate('lastUpdateBy')
+        .populate({ path: 'lastUpdateBy', select: 'name email' })
         .populate('developerRolesId')
         .populate('hardSkillsId')
         .limit(limit)
         .skip(offset);
+      const count: number = await this.projectsModel.find({
+        $or: searchArr.map(e => {
+          return { projectName: { "$regex": e.trim(), "$options": "i" } }
+        })
+      }).count();
+      return { count, data: projects }
     }
     else {
-      return await this.projectsModel.find().populate('lastUpdateBy')
-        .populate('lastUpdateBy')
+      const projects: Project[] = await this.projectsModel.find().populate({ path: 'lastUpdateBy', select: 'name email' })
+        .populate({ path: 'lastUpdateBy', select: 'name email' })
         .populate('developerRolesId')
         .populate('hardSkillsId')
         .limit(limit)
         .skip(offset);
+      const count: number = await this.projectsModel.find().count();
+      return { count, data: projects }
     }
   }
 
   async findOne(id: string): Promise<Project> {
     const project = await this.projectsModel.findById(id)
-      .populate('lastUpdateBy')
+      .populate({ path: 'lastUpdateBy', select: 'name email' })
       .populate('developerRolesId')
       .populate('hardSkillsId');
     if (!project) {
@@ -92,7 +101,7 @@ export class ProjectsService {
             updatedDate: new Date()
           },
           { new: true })
-          .populate('lastUpdateBy')
+          .populate({ path: 'lastUpdateBy', select: 'name email' })
           .populate('developerRolesId')
           .populate('hardSkillsId');
 
@@ -107,7 +116,7 @@ export class ProjectsService {
             updatedDate: new Date()
           },
           { new: true })
-          .populate('lastUpdateBy')
+          .populate({ path: 'lastUpdateBy', select: 'name email' })
           .populate('developerRolesId')
           .populate('hardSkillsId');
 
@@ -122,7 +131,7 @@ export class ProjectsService {
             updatedDate: new Date()
           },
           { new: true })
-          .populate('lastUpdateBy')
+          .populate({ path: 'lastUpdateBy', select: 'name email' })
           .populate('developerRolesId')
           .populate('hardSkillsId');
 
@@ -136,7 +145,7 @@ export class ProjectsService {
           updatedDate: new Date()
         },
         { new: true })
-        .populate('lastUpdateBy')
+        .populate({ path: 'lastUpdateBy', select: 'name email' })
         .populate('developerRolesId')
         .populate('hardSkillsId');
 
@@ -146,7 +155,13 @@ export class ProjectsService {
   }
 
   async remove(id: string, user: User): Promise<Project> {
-    return await this.update(id, { isVisible: false }, { developerRolesId: [], hardSkillsId: [] }, user);
+    //return await this.update(id, { isVisible: false }, { developerRolesId: [], hardSkillsId: [] }, user);
+    try {
+      const project = await this.projectsModel.findByIdAndDelete(id);
+      return project;
+    } catch (error) {
+      this.handleExceptions(error);
+    }
   }
 
   private handleExceptions(error: any) {

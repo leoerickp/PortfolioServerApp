@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
-import { IsBoolean, IsOptional, IsString, MinLength, IsObject, IsArray, ArrayMinSize } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, MinLength, IsObject } from 'class-validator';
 import { LanguagesDto } from '../../../common/dto/inputs/languages.dto';
-import { CreatePhotoDto } from '../../../photos/dto/inputs';
 
 export class CreateAlbumDto {
 
@@ -18,7 +17,4 @@ export class CreateAlbumDto {
     @IsOptional()
     isVisible?: boolean;
 
-    @IsArray()
-    @ArrayMinSize(1)
-    insertPhotos: CreatePhotoDto[];
 }

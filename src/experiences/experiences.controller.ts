@@ -9,6 +9,7 @@ import { PaginationArgs } from '../common/dto/args/pagination.args';
 import { SearchArgs } from '../common/dto/args/search.args';
 import { ParseMongoIdPipe } from '../common/pipes/parse-mongo-id/parse-mongo-id.pipe';
 import { Experience } from './entities/experience.entity';
+import { DataResponse } from '../common/types/data-response';
 
 @Controller('experiences')
 @UseGuards(JwtAuthGuard)
@@ -24,7 +25,7 @@ export class ExperiencesController {
     @CurrentUser() user: User
   ): Promise<Experience> {
     const experience = await this.experiencesService.create(createExperienceDto, user);
-    await this.positionsService.createMany(createExperienceDto.insertPositions, experience, user);
+    //await this.positionsService.createMany(createExperienceDto.insertPositions, experience, user);
     return experience;
 
   }
@@ -33,7 +34,7 @@ export class ExperiencesController {
   async findAll(
     @Query() pagination: PaginationArgs,
     @Query() search: SearchArgs,
-  ): Promise<Experience[]> {
+  ): Promise<DataResponse<Experience>> {
     return await this.experiencesService.findAll(pagination, search);
   }
 
@@ -48,14 +49,14 @@ export class ExperiencesController {
     @Body() updateExperienceDto: UpdateExperienceDto,
     @CurrentUser() user: User
   ): Promise<Experience> {
-    const { insertPositions, updatePositions } = updateExperienceDto;
+    //const { insertPositions, updatePositions } = updateExperienceDto;
     const experience = await this.experiencesService.update(id, updateExperienceDto, user);
-    const promises = []
+    /*const promises = []
     for (const updatePosition of updatePositions) {
       promises.push(this.positionsService.update(updatePosition.id, updatePosition, user));
     }
     await Promise.all(promises);
-    await this.positionsService.createMany(insertPositions, experience, user);
+    await this.positionsService.createMany(insertPositions, experience, user);*/
     return experience;
   }
 

@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { HardSkill } from 'src/hard-skills/entities/hard-skill.entity';
 import { User } from 'src/users/entities/user.entity';
-import { BACKEND_SKILLS, USERS, ROLES, FRONTEND_SKILLS, OTHER_SKILL, DBENGINES, EXPERIENCES, PROJECTS, PHOTOS } from './data/seed.data';
+import { BACKEND_SKILLS, USERS, ROLES, FRONTEND_SKILLS, OTHER_SKILL, DBENGINES, EXPERIENCES, PROJECTS, PHOTOS, PROFILE } from './data/seed.data';
 import { DeveloperRole } from '../developer-roles/entities/developer-role.entity';
 import { UsersService } from '../users/users.service';
 import { Experience } from '../experiences/entities/experience.entity';
@@ -11,6 +11,7 @@ import { Position } from '../positions/entities/position.entity';
 import { Project } from '../projects/entities/project.entity';
 import { Album } from '../albums/entities/album.entity';
 import { Photo } from '../photos/entities/photo.entity';
+import { Profile } from '../profile/entities/profile.entity';
 
 @Injectable()
 export class SeedService {
@@ -31,7 +32,9 @@ export class SeedService {
         @InjectModel(Album.name)
         private readonly albumsModel: Model<Album>,
         @InjectModel(Photo.name)
-        private readonly photosModel: Model<Photo>
+        private readonly photosModel: Model<Photo>,
+        @InjectModel(Profile.name)
+        private readonly profileModel: Model<Profile>
     ) { }
 
     async executeSeed() {
@@ -45,6 +48,7 @@ export class SeedService {
         await this.loadExperiences(user, skill);
         await this.loadProjects(user, role, skill);
         await this.loadAlbums(user);
+        await this.loadProfile(user);
         return 'Seed was loaded successfully!';
     }
 
@@ -57,6 +61,7 @@ export class SeedService {
         await this.projectModel.deleteMany({});
         await this.photosModel.deleteMany({});
         await this.albumsModel.deleteMany({});
+        await this.profileModel.deleteMany({});
     }
 
     private async loadUsers(): Promise<User> {
@@ -161,7 +166,7 @@ export class SeedService {
             for (const position of experience.positions) {
                 dataPositions.push({
                     positionName: { en: position.position },
-                    date: { from: new Date().toDateString(), to: new Date().toDateString() },
+                    date: { from: new Date(), to: new Date() },
                     achievements: position.achievements.map(achievemnt => ({ en: achievemnt })),
                     hardSkillsId: skill,
                     experienceId: newExperience,
@@ -208,4 +213,10 @@ export class SeedService {
         await this.photosModel.insertMany(dataPhotos);
     }
 
+    private async loadProfile(user: User) {
+        const profile = await this.profileModel.create({
+            ...PROFILE,
+            lastUpdateBy: user
+        });
+    }
 }

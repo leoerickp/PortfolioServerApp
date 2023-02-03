@@ -1,6 +1,6 @@
 
 import { Type } from 'class-transformer';
-import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsNotEmptyObject, IsObject, IsOptional } from 'class-validator';
+import { ArrayMinSize, IsArray, IsBoolean, IsMongoId, IsNotEmpty, IsNotEmptyObject, IsObject, IsOptional } from 'class-validator';
 import { LanguagesDto } from '../../../common/dto/inputs/languages.dto';
 import { DateDto } from './date.dto';
 
@@ -23,6 +23,9 @@ export class CreatePositionDto {
     @IsArray()
     @ArrayMinSize(1)
     hardSkillsId: string[];
+
+    @IsMongoId()
+    experienceId: string;
 
     @IsBoolean()
     @IsOptional()

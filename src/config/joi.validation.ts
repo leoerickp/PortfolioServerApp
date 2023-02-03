@@ -9,4 +9,8 @@ export const JoiValidationSchema = Joi.object({
     EMAILTO: Joi.required(),
     MONGODB: Joi.required(),
     JWT_SECRET: Joi.required(),
+    HOST_API: Joi.required(),
+    CLOUDINARY_CLOUD_NAME: Joi.required(),
+    CLOUDINARY_API_KEY: Joi.required(),
+    CLOUDINARY_API_SECRET: Joi.required(),
 })

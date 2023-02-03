@@ -1,11 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { MessageDto } from './dto/message.dto';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class SendEmailService {
 
+    constructor(private mailService: MailService) { }
+
+    /*async sendEmailBetter(messageDto: MessageDto) {
+        await this.mailService.send
+    }*/
+
     async sendEmail(messageDto: MessageDto) {
+        //return await this.mailService.sendEmailPortfolio(messageDto);
         let req: any;
         const { email, message, name, subject } = messageDto;
         const user = process.env.EMAIL;
@@ -27,7 +35,7 @@ export class SendEmailService {
         };
 
         try {
-            req = transporter.sendMail(mailOptions, (error, info) => {
+            req = await transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     throw new NotFoundException(error);
                 } else {

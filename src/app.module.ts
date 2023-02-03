@@ -17,6 +17,10 @@ import { PositionsModule } from './positions/positions.module';
 import { AlbumsModule } from './albums/albums.module';
 import { PhotosModule } from './photos/photos.module';
 import { SeedModule } from './seed/seed.module';
+import { MailModule } from './mail/mail.module';
+import { ProfileModule } from './profile/profile.module';
+import { FilesModule } from './files/files.module';
+import { InfowebModule } from './infoweb/infoweb.module';
 
 
 @Module({
@@ -46,6 +50,10 @@ import { SeedModule } from './seed/seed.module';
     AlbumsModule,
     PhotosModule,
     SeedModule,
+    MailModule,
+    ProfileModule,
+    FilesModule,
+    InfowebModule,
   ],
   controllers: [],
   providers: [],

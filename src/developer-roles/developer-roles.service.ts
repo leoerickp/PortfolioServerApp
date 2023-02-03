@@ -23,12 +23,12 @@ export class DeveloperRolesService {
   }
 
   async findAll(): Promise<DeveloperRole[]> {
-    const developerRoles = await this.developerRolesModel.find().populate('lastUpdateBy');
+    const developerRoles = await this.developerRolesModel.find().populate({ path: 'lastUpdateBy', select: 'name email' });
     return developerRoles;
   }
 
   async findOne(id: string): Promise<DeveloperRole> {
-    const developerRole = await this.developerRolesModel.findById(id).populate('lastUpdateBy');
+    const developerRole = await this.developerRolesModel.findById(id).populate({ path: 'lastUpdateBy', select: 'name email' });
     if (!developerRole) {
       throw new NotFoundException(`${id} not found in db`);
     }
@@ -41,7 +41,7 @@ export class DeveloperRolesService {
         ...updateDeveloperRoleDto,
         updatedDate: new Date(),
         lastUpdateBy: user
-      }).populate('lastUpdateBy')
+      }).populate({ path: 'lastUpdateBy', select: 'name email' })
       if (!developerRole) {
         throw new NotFoundException(`${id} not found in db`);
       }

@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsBoolean, IsEnum, IsInt, IsOptional, IsPositive, IsString, IsUrl, Max, MinLength } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsEnum, IsInt, IsOptional, IsPositive, IsString, IsUrl, Max, Min, MinLength } from "class-validator";
 import { LanguagesDto } from "../../../common/dto/inputs/languages.dto";
 import { ValidSkillTypes } from "src/hard-skills/enums/valid-skilltypes.enum";
 
@@ -10,14 +10,13 @@ export class CreateHardSkillDto {
 
     @IsInt()
     @IsOptional()
-    @IsPositive()
-    @Max(5)
+    @Min(0)
+    @Max(10)
     selfRate?: number;
 
     @IsInt()
     @IsOptional()
-    @IsPositive()
-    @Max(5)
+    @Min(0)
     amountPrjs?: number;
 
     @IsUrl()

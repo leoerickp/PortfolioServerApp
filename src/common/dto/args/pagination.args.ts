@@ -13,7 +13,7 @@ export class PaginationArgs {
 
     @IsInt()
     @IsOptional()
-    @IsPositive()
+    @Min(0)
     @Type(() => Number)
     offset?: number;
 }
