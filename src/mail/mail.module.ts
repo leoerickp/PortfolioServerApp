@@ -28,8 +28,4 @@ import { ConfigModule } from '@nestjs/config';
   providers: [MailService],
   exports: [MailService], // 👈 export for DI
 })
-export class MailModule {
-  constructor() {
-    console.log(process.env.EMAIL, process.env.EPASSWORD)
-  }
-}
+export class MailModule { }

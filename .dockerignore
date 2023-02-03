@@ -1,0 +1,7 @@
+dist/
+node_modules/
+mongo/
+
+.git/
+.vercel/
+vercel.json

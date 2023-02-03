@@ -3,7 +3,7 @@
 /node_modules
 /mongo
 .env
-.vercel
+/.vercel
 vercel.json
 
 # Logs
