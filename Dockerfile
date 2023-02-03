@@ -25,6 +25,6 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN yarn install --prod
 COPY --from=builder /app/dist ./dist
-COPY public /usr/src/app/public
+COPY /public /usr/src/app/public
 
 CMD [ "node","dist/main" ]
